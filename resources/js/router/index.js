@@ -5,6 +5,7 @@ import Contact from '../components/pages/Contact.vue'
 import hooks from '../components/basic/hooks.vue'
 import methods from '../components/basic/methods.vue'
 import Home from '../components/pages/home.vue'
+import Tags from '../tags.vue'
 
 Vue.use(Router)
 
@@ -14,6 +15,11 @@ export default new Router({
             path: '/',
             name: 'home',
             component: Home
+        },
+        {
+            path: '/tags',
+            name: 'tags',
+            component: Tags
         },
         {
             path: '/about',
