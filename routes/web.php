@@ -13,10 +13,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//Route::post('app/create_tag', [\App\Http\Controllers\TagController::class, 'create']);
+
+Route::post('create_tag',  [\App\Http\Controllers\TagController::class, 'store']);
+Route::get('get_tags',  [\App\Http\Controllers\TagController::class, 'index']);
 Route::get('/', function () {
     return view('welcome');
 });
 
-//Route::get('{any?}', function () {
-//    return view('welcome');
-//})->where('any', '.*');
+Route::get('{any?}', function () {
+    return view('welcome');
+})->where('any', '.*');
+
+
+
+
+//Route::resource('tag', \App\Http\Controllers\TagController::class);
+
