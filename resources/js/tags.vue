@@ -23,10 +23,10 @@
                                     <tr v-for="(tag, i) in tags" :key="i" v-if="tags.length">
                                         <td>{{tag.id}}</td>
                                         <td class="_table_name">{{tag.tagName}}</td>
-                                        <td>Economy</td>
+                                        <td>{{tag.created_at}}</td>
                                         <td>
-                                            <Button type="info" size="small">Info</Button>
-                                            <Button type="error" size="small">Delete</Button>
+                                            <Button type="info" size="small" @click="showEditModal(tag)">Edit</Button>
+                                            <Button type="error" size="small" @click="showDeleteModel(tag)" :loading="tag.isDeleting">Delete</Button>
                                         </td>
                                     </tr>
                                     <!-- ITEMS -->
@@ -37,7 +37,7 @@
                         <!-- tag modal -->
                         <Modal
                             v-model="addModal"
-                            title="Common Modal dialog box title"
+                            title="Add Tag"
                             :mask-closable="false"
                             >
                             <Input v-model="data.tagName" type="text" placeholder="Enter tag..." clearable style="width: 200px" />
@@ -45,6 +45,36 @@
                                 <Button type="default" @click="addModal=false">Close</Button>
                                 <Button type="primary" @click="addTag" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Adding...' : 'Add tag'}}</Button>
                             </div>
+                        </Modal>
+
+                        <!-- edit tag modal -->
+                        <Modal
+                            v-model="editModal"
+                            title="Edit Tag"
+                            :mask-closable="false"
+                        >
+                            <Input v-model="editData.tagName" type="text" placeholder="Edit tag..." clearable style="width: 200px" />
+                            <div slot="footer">
+                                <Button type="default" @click="editModal=false">Close</Button>
+                                <Button type="primary" @click="editTag" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Editing...' : 'Edit tag'}}</Button>
+                            </div>
+                        </Modal>
+
+                        <!-- Delete Alert Modal -->
+                        <Modal v-model="showDeleteModal" width="360">
+                            <template #header>
+                                <p style="color:#f60;text-align:center">
+                                    <Icon type="ios-information-circle"></Icon>
+                                    <span>Delete confirmation</span>
+                                </p>
+                            </template>
+                            <div style="text-align:center">
+                                <p>Aer you sure want to delete tag?</p>
+                                <p>Will you delete it?</p>
+                            </div>
+                            <template #footer>
+                                <Button type="error" size="large" long :loading="isDeleting" :disabled="isDeleting" @click="deleteTag">Delete</Button>
+                            </template>
                         </Modal>
 
                     </div>
@@ -65,33 +95,94 @@ export default {
               tagName: '',
           },
           addModal: false,
+          editModal: false,
           isAdding: false,
           tags: [],
+          editData: {
+              tagName: '',
+          },
+          showDeleteModal: false,
+          deleteItem: {},
+          isDeleting: false
       }
     },
 
     methods: {
-      async addTag() {
+        async getTags() {
+            const res = await this.callApi('get', 'tag', )
+            if (res.status == 200) {
+                this.tags = res.data
+            } else {
+                this.swr()
+            }
+        },
+        async addTag() {
           if(this.data.tagName.trim() == '') return this.e('Tag name is required!')
-          const res = await this.callApi('post', 'create_tag', this.data)
-          if(res.status === 200) {
-              const res = await this.callApi('get', 'get_tags', )
-              if (res.status == 200) {
-                  this.tags = res.data
-              } else {
-                  this.swr()
-              }
+          const res = await this.callApi('post', 'tag', this.data)
+          if(res.status === 201) {
+              // get all tags
+              this.getTags()
               this.s('Tag has been added successfully!')
               this.addModal = false
               this.data.tagName = ''
           } else {
-              this.swr()
+              if (res.status == 422) {
+                if (res.data.errors.tagName) {
+                    this.e(res.data.errors.tagName[0])
+                }
+              } else {
+                  this.swr()
+              }
           }
-      },
+        },
+        async editTag() {
+            if(this.editData.tagName.trim() == '') return this.e('Tag name is required!')
+            const res = await this.callApi('post', 'update_tag', this.editData)
+            if(res.status === 201) {
+                // get all tags
+                this.getTags()
+                this.s('Tag has been edited successfully!')
+                this.editModal = false
+            } else {
+                if (res.status == 422) {
+                    if (res.data.errors.tagName) {
+                        this.e(res.data.errors.tagName[0])
+                    }
+                } else {
+                    this.swr()
+                }
+            }
+        },
+        showEditModal(tag) {
+          let obj = {
+              id: tag.id,
+              tagName: tag.tagName,
+          }
+            this.editData = obj
+            this.editModal = true
+
+        },
+        async deleteTag() {
+            this.isDeleting = true
+            const res = await this.callApi('post', 'delete_tag', this.deleteItem)
+            if (res.status === 201) {
+                // get all tags
+                this.getTags()
+                this.s('Tag has been deleted successfully!')
+            } else {
+                this.swr()
+            }
+            this.isDeleting = false
+            this.showDeleteModal = false
+        },
+        showDeleteModel(tag) {
+            this.deleteItem = tag
+            this.showDeleteModal = true
+        }
     },
 
     async created() {
-        const res = await this.callApi('get', 'get_tags', )
+        const res = await this.callApi('get', 'tag', )
         if (res.status == 200) {
             this.tags = res.data
         } else {

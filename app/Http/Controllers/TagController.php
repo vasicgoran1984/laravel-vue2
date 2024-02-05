@@ -35,13 +35,16 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'tagName' => 'required',
+        ]);
+
         $create = Tag::create([
             'tagName' => $request->tagName,
         ]);
+
         if ($create) {
-            return response()->json(['msg' => 'saved'], 200);
-        } else {
-            return response()->json(['msg' => 'some error'], 201);
+            return response()->json(['msg' => 'saved'], 201);
         }
 
     }
@@ -75,19 +78,43 @@ class TagController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+//        $tag = TAg::findOrFail($request->id);
+//        print_r($tag->id);
+//        die('x');
+//        return 'update';
     }
 
+    public function editTag(Request $request)
+    {
+        $this->validate($request, [
+            'tagName' => 'required',
+        ]);
+
+        $tag = Tag::where('id', $request->id)->update([
+            'tagName' => $request->tagName,
+        ]);
+        if ($tag) {
+            return response()->json(['msg' => 'saved'], 201);
+        }
+
+    }
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $this->validate($request, [
+            'id' => 'required',
+        ]);
+
+        $tag = Tag::where('id', $request->id)->delete();
+        if ($tag) {
+            return response()->json(['msg' => 'deleted'], 201);
+        }
     }
 }

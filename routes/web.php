@@ -15,11 +15,15 @@ use Illuminate\Support\Facades\Route;
 
 //Route::post('app/create_tag', [\App\Http\Controllers\TagController::class, 'create']);
 
-Route::post('create_tag',  [\App\Http\Controllers\TagController::class, 'store']);
-Route::get('get_tags',  [\App\Http\Controllers\TagController::class, 'index']);
+//Route::post('create_tag',  [\App\Http\Controllers\TagController::class, 'store']);
+//Route::get('get_tags',  [\App\Http\Controllers\TagController::class, 'index']);
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::resource('tag', \App\Http\Controllers\TagController::class);
+Route::post('update_tag',  [\App\Http\Controllers\TagController::class, 'editTag']);
+Route::post('delete_tag',  [\App\Http\Controllers\TagController::class, 'destroy']);
 
 Route::get('{any?}', function () {
     return view('welcome');
@@ -28,5 +32,5 @@ Route::get('{any?}', function () {
 
 
 
-//Route::resource('tag', \App\Http\Controllers\TagController::class);
+
 
