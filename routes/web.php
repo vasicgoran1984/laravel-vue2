@@ -25,6 +25,13 @@ Route::resource('tag', \App\Http\Controllers\TagController::class);
 Route::post('update_tag',  [\App\Http\Controllers\TagController::class, 'editTag']);
 Route::post('delete_tag',  [\App\Http\Controllers\TagController::class, 'destroy']);
 
+// Category
+Route::resource('category', \App\Http\Controllers\CategoryController::class);
+Route::post('update_category',  [\App\Http\Controllers\CategoryController::class, 'editCategory']);
+Route::post('delete_category',  [\App\Http\Controllers\CategoryController::class, 'destroy']);
+Route::post('app/upload',  [\App\Http\Controllers\CategoryController::class, 'upload']);
+
+
 Route::get('{any?}', function () {
     return view('welcome');
 })->where('any', '.*');
