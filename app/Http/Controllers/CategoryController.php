@@ -129,4 +129,14 @@ class CategoryController extends Controller
         $request->file->move(public_path('uploads'), $image);
         return $image;
     }
+
+    public function deleteImage(Request $request)
+    {
+        $file = $request->imageName;
+        $filePath = public_path().'/uploads/'.$file;
+        if (file_exists($filePath)) {
+            @unlink($filePath);
+        }
+        return 'done';
+    }
 }
