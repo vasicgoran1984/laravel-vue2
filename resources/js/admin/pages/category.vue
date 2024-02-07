@@ -61,9 +61,13 @@
                                     </div>
                                 </Upload>
                             </div>
-                            <div class="image_thumb">
-                                <img :src="`/uploads/${data.iconImage}`" v-if="data.iconImage " />
+                            <div class="demo-upload-list" v-if="data.iconImage">
+                                <img :src="`/uploads/${data.iconImage}`">
+                                <div class="demo-upload-list-cover">
+                                    <Icon type="ios-trash-outline" @click="deleteImage()"></Icon>
+                                </div>
                             </div>
+
 
 <!--                            <Input v-model="data.iconImage" type="text" placeholder="Enter image..." clearable style="width: 200px" />-->
                             <div slot="footer">
@@ -235,6 +239,15 @@ export default {
                 desc: 'File  ' + file.name + ' is too large, no more than 2M.'
             });
         },
+        async deleteImage() {
+            let image = this.data.iconImage
+            this.data.iconImage = ''
+            const res = await this.callApi('post', 'app/delete_image', {imageName: image})
+            if (res.status != 200) {
+                this.data.iconImage = image
+                this.swr()
+            }
+s        }
     },
 
     async created() {

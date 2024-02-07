@@ -30,6 +30,7 @@ Route::resource('category', \App\Http\Controllers\CategoryController::class);
 Route::post('update_category',  [\App\Http\Controllers\CategoryController::class, 'editCategory']);
 Route::post('delete_category',  [\App\Http\Controllers\CategoryController::class, 'destroy']);
 Route::post('app/upload',  [\App\Http\Controllers\CategoryController::class, 'upload']);
+Route::post('app/delete_image',  [\App\Http\Controllers\CategoryController::class, 'deleteImage']);
 
 
 Route::get('{any?}', function () {
