@@ -39,7 +39,7 @@
                             v-model="addModal"
                             title="Add Tag"
                             :mask-closable="false"
-                            >
+                        >
                             <Input v-model="data.tagName" type="text" placeholder="Enter tag..." clearable style="width: 200px" />
                             <div slot="footer">
                                 <Button type="default" @click="addModal=false">Close</Button>
@@ -90,21 +90,21 @@
 export default {
 
     data() {
-      return {
-          data: {
-              tagName: '',
-          },
-          addModal: false,
-          editModal: false,
-          isAdding: false,
-          tags: [],
-          editData: {
-              tagName: '',
-          },
-          showDeleteModal: false,
-          deleteItem: {},
-          isDeleting: false
-      }
+        return {
+            data: {
+                tagName: '',
+            },
+            addModal: false,
+            editModal: false,
+            isAdding: false,
+            tags: [],
+            editData: {
+                tagName: '',
+            },
+            showDeleteModal: false,
+            deleteItem: {},
+            isDeleting: false
+        }
     },
 
     methods: {
@@ -117,23 +117,23 @@ export default {
             }
         },
         async addTag() {
-          if(this.data.tagName.trim() == '') return this.e('Tag name is required!')
-          const res = await this.callApi('post', 'tag', this.data)
-          if(res.status === 201) {
-              // get all tags
-              this.getTags()
-              this.s('Tag has been added successfully!')
-              this.addModal = false
-              this.data.tagName = ''
-          } else {
-              if (res.status == 422) {
-                if (res.data.errors.tagName) {
-                    this.e(res.data.errors.tagName[0])
+            if(this.data.tagName.trim() == '') return this.e('Tag name is required!')
+            const res = await this.callApi('post', 'tag', this.data)
+            if(res.status === 201) {
+                // get all tags
+                this.getTags()
+                this.s('Tag has been added successfully!')
+                this.addModal = false
+                this.data.tagName = ''
+            } else {
+                if (res.status == 422) {
+                    if (res.data.errors.tagName) {
+                        this.e(res.data.errors.tagName[0])
+                    }
+                } else {
+                    this.swr()
                 }
-              } else {
-                  this.swr()
-              }
-          }
+            }
         },
         async editTag() {
             if(this.editData.tagName.trim() == '') return this.e('Tag name is required!')
@@ -154,10 +154,10 @@ export default {
             }
         },
         showEditModal(tag) {
-          let obj = {
-              id: tag.id,
-              tagName: tag.tagName,
-          }
+            let obj = {
+                id: tag.id,
+                tagName: tag.tagName,
+            }
             this.editData = obj
             this.editModal = true
 

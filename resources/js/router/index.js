@@ -5,7 +5,8 @@ import Contact from '../components/pages/Contact.vue'
 import hooks from '../components/basic/hooks.vue'
 import methods from '../components/basic/methods.vue'
 import Home from '../components/pages/home.vue'
-import Tags from '../tags.vue'
+import Tags from '../admin/pages/tags.vue'
+import Category from '../admin/pages/category.vue'
 
 Vue.use(Router)
 
@@ -22,14 +23,9 @@ export default new Router({
             component: Tags
         },
         {
-            path: '/about',
-            name: 'about',
-            component: About
-        },
-        {
-            path: '/contact',
-            name: 'contact',
-            component: Contact
+            path: '/category',
+            name: 'category',
+            component: Category
         },
 
         // vue hooks
