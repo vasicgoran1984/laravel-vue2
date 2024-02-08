@@ -115,6 +115,7 @@ class CategoryController extends Controller
 
         $category = Category::where('id', $request->id)->delete();
         if ($category) {
+            $this->deleteImage($request);
             return response()->json(['msg' => 'deleted'], 201);
         }
     }
@@ -132,7 +133,7 @@ class CategoryController extends Controller
 
     public function deleteImage(Request $request)
     {
-        $file = $request->imageName;
+        $file = $request->iconImage;
         $filePath = public_path().'/uploads/'.$file;
         if (file_exists($filePath)) {
             @unlink($filePath);
