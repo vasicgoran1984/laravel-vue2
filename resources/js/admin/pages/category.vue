@@ -46,6 +46,7 @@
 
                             <div class="space">
                                 <Upload
+                                    ref="uploads"
                                     type="drag"
                                     :headers="{'x-csrf-token': token, 'X-Requested-With' : 'XMLHttpRequest'}"
                                     :on-success="handleSuccess"
@@ -68,11 +69,9 @@
                                 </div>
                             </div>
 
-
-<!--                            <Input v-model="data.iconImage" type="text" placeholder="Enter image..." clearable style="width: 200px" />-->
                             <div slot="footer">
                                 <Button type="default" @click="addModal=false">Close</Button>
-                                <Button type="primary" @click="addCategory" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Adding...' : 'Add tag'}}</Button>
+                                <Button type="primary" @click="addCategory" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Adding...' : 'Add category'}}</Button>
                             </div>
                         </Modal>
 
@@ -81,11 +80,40 @@
                             v-model="editModal"
                             title="Edit Category"
                             :mask-closable="false"
+                            :closable="false"
                         >
                             <Input v-model="editData.categoryName" type="text" placeholder="Edit category..." clearable style="width: 200px" />
-                            <Input v-model="editData.iconImage" type="text" placeholder="Edit icon..." clearable style="width: 200px" />
+<!--                            <Input v-model="editData.iconImage" type="text" placeholder="Edit icon..." clearable style="width: 200px" />-->
+
+
+                            <div class="space">
+                                <Upload v-show="isIconImageNew"
+                                    ref="editDataUploads"
+                                    type="drag"
+                                    :headers="{'x-csrf-token': token, 'X-Requested-With' : 'XMLHttpRequest'}"
+                                    :on-success="handleSuccess"
+                                    :on-error="handleError"
+                                    :format="['jpg','jpeg','png']"
+                                    :max-size="2048"
+                                    :on-format-error="handleFormatError"
+                                    :on-exceeded-size="handleMaxSize"
+                                    action="/app/upload">
+                                    <div style="padding: 20px 0">
+                                        <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                                        <p>Click or drag files here to upload</p>
+                                    </div>
+                                </Upload>
+                            </div>
+                            <div class="demo-upload-list" v-if="editData.iconImage">
+                                <img :src="`uploads/${editData.iconImage}`">
+                                <div class="demo-upload-list-cover">
+                                    <Icon type="ios-trash-outline" @click="deleteImage(false)"></Icon>
+                                </div>
+                            </div>
+
+
                             <div slot="footer">
-                                <Button type="default" @click="editModal=false">Close</Button>
+                                <Button type="default" @click="editModal=closeEditModal()">Close</Button>
                                 <Button type="primary" @click="editCategory" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Editing...' : 'Edit category'}}</Button>
                             </div>
                         </Modal>
@@ -139,6 +167,8 @@ export default {
             deleteItem: {},
             isDeleting: false,
             token: '',
+            isIconImageNew: false,
+            isEditingItem: false,
         }
     },
 
@@ -199,6 +229,8 @@ export default {
             }
             this.editData = obj
             this.editModal = true
+            this.isEditingItem = true
+            this.isIconImageNew = false
 
         },
         async deleteCategory() {
@@ -219,6 +251,10 @@ export default {
             this.showDeleteModal = true
         },
         handleSuccess (res, file) {
+            if (this.isEditingItem) {
+                this.editData.iconImage = res
+                this.isIconImageNew = false
+            }
             this.data.iconImage = res
         },
         handleError (res, file) {
@@ -236,18 +272,30 @@ export default {
         handleMaxSize (file) {
             this.$Notice.warning({
                 title: 'Exceeding file size limit',
-                desc: 'File  ' + file.name + ' is too large, no more than 2M.'
+                desc: 'File ' + file.name + ' is too large, no more than 2M.'
             });
         },
-        async deleteImage() {
-            let image = this.data.iconImage
-            this.data.iconImage = ''
-            const res = await this.callApi('post', 'app/delete_image', {imageName: image})
+        async deleteImage(isAdd=true) {
+            let image = this.editData.iconImage
+            if (!isAdd) {
+                this.isIconImageNew = true
+                this.editData.iconImage = ''
+                this.$refs.editDataUploads.clearFiles()
+            } else {
+                this.data.iconImage = ''
+                this.$refs.uploads.clearFiles()
+            }
+
+            const res = await this.callApi('post', 'app/delete_image', {iconImage: image})
             if (res.status != 200) {
                 this.data.iconImage = image
                 this.swr()
             }
-s        }
+        },
+        closeEditModal() {
+            this.isEditingItem = false
+            this.editModal = false
+        }
     },
 
     async created() {
