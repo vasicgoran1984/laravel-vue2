@@ -45,7 +45,7 @@
                             <Input v-model="data.categoryName" type="text" placeholder="Enter category..." clearable style="width: 200px" />
 
                             <div class="space">
-                                <Upload
+                                <Upload v-show="!data.iconImage"
                                     ref="uploads"
                                     type="drag"
                                     :headers="{'x-csrf-token': token, 'X-Requested-With' : 'XMLHttpRequest'}"
@@ -83,8 +83,6 @@
                             :closable="false"
                         >
                             <Input v-model="editData.categoryName" type="text" placeholder="Edit category..." clearable style="width: 200px" />
-<!--                            <Input v-model="editData.iconImage" type="text" placeholder="Edit icon..." clearable style="width: 200px" />-->
-
 
                             <div class="space">
                                 <Upload v-show="isIconImageNew"
@@ -193,6 +191,8 @@ export default {
                 this.s('Category has been added successfully!')
                 this.addModal = false
                 this.data.categoryName = ''
+                this.data.iconImage = ''
+                this.$refs.uploads.clearFiles()
             } else {
                 if (res.status == 422) {
                     if (res.data.errors.categoryName) {
@@ -211,6 +211,7 @@ export default {
                 this.getCategories()
                 this.s('Category has been edited successfully!')
                 this.editModal = false
+                this.data.iconImage = ''
             } else {
                 if (res.status == 422) {
                     if (res.data.errors.categoryName) {
