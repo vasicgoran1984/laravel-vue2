@@ -33,6 +33,9 @@ Route::post('app/upload',  [\App\Http\Controllers\CategoryController::class, 'up
 Route::post('app/delete_image',  [\App\Http\Controllers\CategoryController::class, 'deleteImage']);
 
 
+// User
+Route::resource('user', \App\Http\Controllers\UserController::class);
+
 Route::get('{any?}', function () {
     return view('welcome');
 })->where('any', '.*');
