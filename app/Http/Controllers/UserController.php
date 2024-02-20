@@ -87,6 +87,34 @@ class UserController extends Controller
         //
     }
 
+    public function editUser(Request $request)
+    {
+        $this->validate($request, [
+            'fullName' => 'required',
+            'email' => "bail|required|email|unique:users,email,$request->id",
+            'password' => 'min:6',
+            'userType' => 'required',
+        ]);
+
+        $data = [
+            'fullName' => $request->fullName,
+            'email' => $request->email,
+            'userType' => $request->userType,
+        ];
+
+        if ($request->password) {
+            $password = bcrypt($request->password);
+            $data['password'] = $password;
+        }
+
+        $user = User::where('id', $request->id)->update($data);
+
+        if ($user) {
+            return response()->json(['msg' => 'saved'], 201);
+        }
+
+    }
+
     /**
      * Remove the specified resource from storage.
      *
