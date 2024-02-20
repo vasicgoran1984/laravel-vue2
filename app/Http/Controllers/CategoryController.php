@@ -14,7 +14,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return Category::orderBy('id', 'asc')->get();
+        return Category::orderBy('id', 'desc')->get();
     }
 
     /**
@@ -40,14 +40,14 @@ class CategoryController extends Controller
             'iconImage'    => 'required',
         ]);
 
-        $create = Category::create([
+        return Category::create([
             'categoryName' => $request->categoryName,
             'iconImage' => $request->iconImage,
         ]);
 
-        if ($create) {
-            return response()->json(['msg' => 'saved'], 201);
-        }
+//        if ($create) {
+//            return response()->json(['msg' => 'saved'], 201);
+//        }
     }
 
     /**

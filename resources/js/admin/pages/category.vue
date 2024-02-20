@@ -28,7 +28,7 @@
                                         <td>{{category.created_at}}</td>
                                         <td>
                                             <Button type="info" size="small" @click="showEditModal(category)">Edit</Button>
-                                            <Button type="error" size="small" @click="showDeleteModel(category)" :loading="category.isDeleting">Delete</Button>
+                                            <Button type="error" size="small" @click="showDeleteModel(category, i)" :loading="category.isDeleting">Delete</Button>
                                         </td>
                                     </tr>
                                     <!-- ITEMS -->
@@ -117,21 +117,23 @@
                         </Modal>
 
                         <!-- Delete Alert Modal -->
-                        <Modal v-model="showDeleteModal" width="360">
-                            <template #header>
-                                <p style="color:#f60;text-align:center">
-                                    <Icon type="ios-information-circle"></Icon>
-                                    <span>Delete confirmation</span>
-                                </p>
-                            </template>
-                            <div style="text-align:center">
-                                <p>Aer you sure want to delete category?</p>
-                                <p>Will you delete it?</p>
-                            </div>
-                            <template #footer>
-                                <Button type="error" size="large" long :loading="isDeleting" :disabled="isDeleting" @click="deleteCategory">Delete</Button>
-                            </template>
-                        </Modal>
+<!--                        <Modal v-model="showDeleteModal" width="360">-->
+<!--                            <template #header>-->
+<!--                                <p style="color:#f60;text-align:center">-->
+<!--                                    <Icon type="ios-information-circle"></Icon>-->
+<!--                                    <span>Delete confirmation</span>-->
+<!--                                </p>-->
+<!--                            </template>-->
+<!--                            <div style="text-align:center">-->
+<!--                                <p>Aer you sure want to delete category?</p>-->
+<!--                                <p>Will you delete it?</p>-->
+<!--                            </div>-->
+<!--                            <template #footer>-->
+<!--                                <Button type="error" size="large" long :loading="isDeleting" :disabled="isDeleting" @click="deleteCategory">Delete 2</Button>-->
+<!--                            </template>-->
+<!--                        </Modal>-->
+
+                        <deleteModal></deleteModal>
 
                     </div>
                 </div>
@@ -143,8 +145,8 @@
 </template>
 
 <script>
-import {del} from "vue";
-
+import deleteModal from '../../components/deleteModal.vue'
+import store from "../../store";
 export default {
 
     data() {
@@ -167,6 +169,7 @@ export default {
             token: '',
             isIconImageNew: false,
             isEditingItem: false,
+            deletingIndex: -1,
         }
     },
 
@@ -187,7 +190,8 @@ export default {
             const res = await this.callApi('post', 'category', this.data)
             if(res.status === 201) {
                 // get all categories
-                this.getCategories()
+                // this.getCategories()
+                this.categories.unshift(res.data)
                 this.s('Category has been added successfully!')
                 this.addModal = false
                 this.data.categoryName = ''
@@ -234,22 +238,31 @@ export default {
             this.isIconImageNew = false
 
         },
-        async deleteCategory() {
-            this.isDeleting = true
-            const res = await this.callApi('post', 'delete_category', this.deleteItem)
-            if (res.status === 201) {
-                // get all categories
-                this.getCategories()
-                this.s('Category has been deleted successfully!')
-            } else {
-                this.swr()
-            }
-            this.isDeleting = false
-            this.showDeleteModal = false
-        },
+        // async deleteCategory() {
+        //     this.isDeleting = true
+        //     const res = await this.callApi('post', 'delete_category', this.deleteItem)
+        //     if (res.status === 201) {
+        //         // get all categories
+        //         this.getCategories()
+        //         this.s('Category has been deleted successfully!')
+        //     } else {
+        //         this.swr()
+        //     }
+        //     this.isDeleting = false
+        //     this.showDeleteModal = false
+        // },
         showDeleteModel(category) {
-            this.deleteItem = category
-            this.showDeleteModal = true
+
+            const delModalObj = {
+                showDeleteModal: true,
+                isDeleted: false,
+                data: category,
+                deleteUrl: 'delete_category',
+            }
+
+            store.commit('setDeletingModalObj', delModalObj)
+            // this.deleteItem = category
+            // this.showDeleteModal = true
         },
         handleSuccess (res, file) {
             if (this.isEditingItem) {
@@ -298,10 +311,24 @@ export default {
             this.editModal = false
         }
     },
-
     async created() {
         this.token = window.Laravel.csrfToken
         this.getCategories()
+    },
+    components: {
+        deleteModal,
+    },
+    computed: {
+        getDeleteModel() {
+            return store.getters.getDeleteModel
+        }
+    },
+    watch: {
+        getDeleteModel(obj) {
+            if(obj.isDeleted) {
+                this.categories.splice(this.deletingIndex, 1)
+            }
+        }
     }
 
 }

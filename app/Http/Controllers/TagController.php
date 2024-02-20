@@ -14,7 +14,7 @@ class TagController extends Controller
      */
     public function index()
     {
-        return Tag::orderBy('id', 'asc')->get();
+        return Tag::orderBy('id', 'desc')->get();
     }
 
     /**
@@ -39,13 +39,13 @@ class TagController extends Controller
             'tagName' => 'required',
         ]);
 
-        $create = Tag::create([
+        return Tag::create([
             'tagName' => $request->tagName,
         ]);
 
-        if ($create) {
-            return response()->json(['msg' => 'saved'], 201);
-        }
+//        if ($create) {
+//            return response()->json(['msg' => 'saved', 'tagName' => $request->tagName], 201);
+//        }
 
     }
 
