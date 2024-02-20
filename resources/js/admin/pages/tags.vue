@@ -25,8 +25,8 @@
                                         <td class="_table_name">{{tag.tagName}}</td>
                                         <td>{{tag.created_at}}</td>
                                         <td>
-                                            <Button type="info" size="small" @click="showEditModal(tag)">Edit</Button>
-                                            <Button type="error" size="small" @click="showDeleteModel(tag)" :loading="tag.isDeleting">Delete</Button>
+                                            <Button type="info" size="small" @click="showEditModal(tag, i)">Edit</Button>
+                                            <Button type="error" size="small" @click="showDeleteModel(tag, i)" :loading="tag.isDeleting">Delete</Button>
                                         </td>
                                     </tr>
                                     <!-- ITEMS -->
@@ -101,9 +101,11 @@ export default {
             editData: {
                 tagName: '',
             },
+            index: -1,
             showDeleteModal: false,
             deleteItem: {},
-            isDeleting: false
+            isDeleting: false,
+            deletingIndex: -1,
         }
     },
 
@@ -121,7 +123,8 @@ export default {
             const res = await this.callApi('post', 'tag', this.data)
             if(res.status === 201) {
                 // get all tags
-                this.getTags()
+                // this.getTags()
+                this.tags.unshift(res.data)
                 this.s('Tag has been added successfully!')
                 this.addModal = false
                 this.data.tagName = ''
@@ -140,7 +143,8 @@ export default {
             const res = await this.callApi('post', 'update_tag', this.editData)
             if(res.status === 201) {
                 // get all tags
-                this.getTags()
+                // this.getTags()
+                this.tags[this.index].tagName = this.editData.tagName
                 this.s('Tag has been edited successfully!')
                 this.editModal = false
             } else {
@@ -153,21 +157,22 @@ export default {
                 }
             }
         },
-        showEditModal(tag) {
+        showEditModal(tag, index) {
             let obj = {
                 id: tag.id,
                 tagName: tag.tagName,
             }
             this.editData = obj
             this.editModal = true
-
+            this.index = index
         },
         async deleteTag() {
             this.isDeleting = true
             const res = await this.callApi('post', 'delete_tag', this.deleteItem)
             if (res.status === 201) {
                 // get all tags
-                this.getTags()
+                // this.getTags()
+                this.tags.splice(this.deletingIndex, 1)
                 this.s('Tag has been deleted successfully!')
             } else {
                 this.swr()
@@ -175,8 +180,9 @@ export default {
             this.isDeleting = false
             this.showDeleteModal = false
         },
-        showDeleteModel(tag) {
+        showDeleteModel(tag, index) {
             this.deleteItem = tag
+            this.deletingIndex = index
             this.showDeleteModal = true
         }
     },
