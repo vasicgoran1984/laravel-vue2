@@ -7,7 +7,7 @@ import methods from '../components/basic/methods.vue'
 import Home from '../components/pages/home.vue'
 import Tags from '../admin/pages/tags.vue'
 import Category from '../admin/pages/category.vue'
-import usecom from '../vuex/usecom.vue'
+import adminusers from "../admin/pages/adminusers.vue";
 
 Vue.use(Router)
 
@@ -29,9 +29,9 @@ export default new Router({
             component: Category
         },
         {
-            path: '/testvuex',
-            name: 'testvuex',
-            component: usecom
+            path: '/adminusers',
+            name: 'adminusers',
+            component: adminusers
         },
 
         // vue hooks
