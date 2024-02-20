@@ -35,6 +35,7 @@ Route::post('app/delete_image',  [\App\Http\Controllers\CategoryController::clas
 
 // User
 Route::resource('user', \App\Http\Controllers\UserController::class);
+Route::post('update_user',  [\App\Http\Controllers\UserController::class, 'editUser']);
 
 Route::get('{any?}', function () {
     return view('welcome');

@@ -71,10 +71,25 @@
                             title="Edit Tag"
                             :mask-closable="false"
                         >
-                            <Input v-model="editData.tagName" type="text" placeholder="Edit tag..." clearable style="width: 200px" />
+                            <div class="space">
+                                <Input v-model="editData.fullName" type="text" placeholder="Full Name" />
+                            </div>
+                            <div class="space">
+                                <Input v-model="editData.email" type="text" placeholder="Email" />
+                            </div>
+                            <div class="space">
+                                <Input v-model="editData.password" type="password" placeholder="Password" />
+                            </div>
+                            <div class="space">
+                                <Select v-model="editData.userType" style="width:200px" placeholder="User Type">
+                                    <Option value="Admin">Admin</Option>
+                                    <Option value="Editor">Editor</Option>
+                                </Select>
+                            </div>
+
                             <div slot="footer">
                                 <Button type="default" @click="editModal=false">Close</Button>
-                                <Button type="primary" @click="editTag" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Editing...' : 'Edit tag'}}</Button>
+                                <Button type="primary" @click="editAdmin" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Editing...' : 'Edit admin'}}</Button>
                             </div>
                         </Modal>
 
@@ -120,7 +135,10 @@ export default {
             isAdding: false,
             users: [],
             editData: {
-                tagName: '',
+                fullName: '',
+                email: '',
+                password: '',
+                userType: '',
             },
             index: -1,
             showDeleteModal: false,
@@ -147,13 +165,11 @@ export default {
 
             const res = await this.callApi('post', 'user', this.data)
             if(res.status === 201) {
-                this.tags.unshift(res.data)
+                this.users.unshift(res.data)
                 this.s('Admin user has been added successfully!')
                 this.addModal = false
-                this.data.tagName = ''
             } else {
                 if (res.status == 422) {
-                    console.log(res.data.errors)
                     for (let i in res.data.errors) {
                         this.e(res.data.errors[i])
                     }
@@ -162,29 +178,33 @@ export default {
                 }
             }
         },
-        async editTag() {
-            if(this.editData.tagName.trim() == '') return this.e('Tag name is required!')
-            const res = await this.callApi('post', 'update_tag', this.editData)
+        async editAdmin() {
+            if(this.editData.fullName.trim() == '') return this.e('Full name is required!')
+            if(this.editData.email.trim() == '') return this.e('Email is required!')
+            if(this.editData.userType.trim() == '') return this.e('User Type is required!')
+
+            const res = await this.callApi('post', 'update_user', this.editData)
             if(res.status === 201) {
-                // get all tags
-                // this.getTags()
-                this.tags[this.index].tagName = this.editData.tagName
-                this.s('Tag has been edited successfully!')
+                // get all users
+                this.users[this.index] = this.editData
+                this.s('User has been edited successfully!')
                 this.editModal = false
             } else {
                 if (res.status == 422) {
-                    if (res.data.errors.tagName) {
-                        this.e(res.data.errors.tagName[0])
+                    for (let i in res.data.errors) {
+                        this.e(res.data.errors[i])
                     }
                 } else {
                     this.swr()
                 }
             }
         },
-        showEditModal(tag, index) {
+        showEditModal(user, index) {
             let obj = {
-                id: tag.id,
-                tagName: tag.tagName,
+                id: user.id,
+                fullName: user.fullName,
+                email: user.email,
+                userType: user.userType,
             }
             this.editData = obj
             this.editModal = true
