@@ -2492,19 +2492,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.isEditingItem = true;
       this.isIconImageNew = false;
     },
-    // async deleteCategory() {
-    //     this.isDeleting = true
-    //     const res = await this.callApi('post', 'delete_category', this.deleteItem)
-    //     if (res.status === 201) {
-    //         // get all categories
-    //         this.getCategories()
-    //         this.s('Category has been deleted successfully!')
-    //     } else {
-    //         this.swr()
-    //     }
-    //     this.isDeleting = false
-    //     this.showDeleteModal = false
-    // },
     showDeleteModel: function showDeleteModel(category) {
       var delModalObj = {
         showDeleteModal: true,
@@ -2513,13 +2500,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         deleteUrl: 'delete_category'
       };
       _store__WEBPACK_IMPORTED_MODULE_1__["default"].commit('setDeletingModalObj', delModalObj);
-      // this.deleteItem = category
-      // this.showDeleteModal = true
     },
     handleSuccess: function handleSuccess(res, file) {
       if (this.isEditingItem) {
         this.editData.iconImage = res;
         this.isIconImageNew = false;
+        return this.editData.iconImage = res;
       }
       this.data.iconImage = res;
     },
@@ -2957,12 +2943,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _this.swr();
                 _store__WEBPACK_IMPORTED_MODULE_0__["default"].commit('setDeleteModal', false);
               }
-            case 5:
+              _this.isDeleting = false;
+            case 6:
             case "end":
               return _context.stop();
           }
         }, _callee);
       }))();
+    },
+    closeModal: function closeModal() {
+      _store__WEBPACK_IMPORTED_MODULE_0__["default"].commit('SetDeleteModal', false);
     }
   },
   computed: {
@@ -3285,9 +3275,15 @@ var render = function render() {
   }, [_vm._m(0), _vm._v(" "), _vm._l(_vm.categories, function (category, i) {
     return _vm.categories.length ? _c("tr", {
       key: i
-    }, [_c("td", [_vm._v(_vm._s(category.id))]), _vm._v(" "), _c("td", {
-      staticClass: "_table_name"
-    }, [_vm._v(_vm._s(category.categoryName))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(category.iconImage))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(category.created_at))]), _vm._v(" "), _c("td", [_c("Button", {
+    }, [_c("td", [_vm._v(_vm._s(category.id))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(category.categoryName))]), _vm._v(" "), category.iconImage ? _c("div", {
+      staticClass: "img-category-list"
+    }, [_c("td", {
+      staticClass: "table_image"
+    }, [_c("img", {
+      attrs: {
+        src: "/uploads/".concat(category.iconImage)
+      }
+    })])]) : _vm._e(), _vm._v(" "), _c("td", [_vm._v(_vm._s(category.iconImage))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(category.created_at))]), _vm._v(" "), _c("td", [_c("Button", {
       attrs: {
         type: "info",
         size: "small"
@@ -3523,7 +3519,7 @@ var render = function render() {
 var staticRenderFns = [function () {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("tr", [_c("th", [_vm._v("ID")]), _vm._v(" "), _c("th", [_vm._v("Category Name")]), _vm._v(" "), _c("th", [_vm._v("Icon Image")]), _vm._v(" "), _c("th", [_vm._v("Created")]), _vm._v(" "), _c("th", [_vm._v("Action")])]);
+  return _c("tr", [_c("th", [_vm._v("ID")]), _vm._v(" "), _c("th", [_vm._v("Category Name")]), _vm._v(" "), _c("th", [_vm._v("Image")]), _vm._v(" "), _c("th", [_vm._v("Icon Image")]), _vm._v(" "), _c("th", [_vm._v("Created")]), _vm._v(" "), _c("th", [_vm._v("Action")])]);
 }];
 render._withStripped = true;
 

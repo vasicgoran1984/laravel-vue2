@@ -41,7 +41,11 @@
                     this.swr()
                     store.commit('setDeleteModal', false)
                 }
+                this.isDeleting = false
             },
+            closeModal() {
+                store.commit('SetDeleteModal', false)
+            }
         },
         computed: {
             getDeleteModel() {
