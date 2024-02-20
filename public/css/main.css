@@ -3083,3 +3083,7 @@ i.cross_icon{
     border-right: 1px solid #0099ff !important;
     background: #eaeaea;
 }
+
+.img-category-list img {
+    width: 100px;
+}

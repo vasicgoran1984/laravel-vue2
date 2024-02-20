@@ -14,6 +14,7 @@
                                     <tr>
                                         <th>ID</th>
                                         <th>Category Name</th>
+                                        <th>Image</th>
                                         <th>Icon Image</th>
                                         <th>Created</th>
                                         <th>Action</th>
@@ -23,7 +24,12 @@
                                     <!-- ITEMS -->
                                     <tr v-for="(category, i) in categories" :key="i" v-if="categories.length">
                                         <td>{{category.id}}</td>
-                                        <td class="_table_name">{{category.categoryName}}</td>
+                                        <td>{{category.categoryName}}</td>
+                                        <div class="img-category-list" v-if="category.iconImage">
+                                            <td class="table_image">
+                                                <img :src="`/uploads/${category.iconImage}`" />
+                                            </td>
+                                        </div>
                                         <td>{{category.iconImage}}</td>
                                         <td>{{category.created_at}}</td>
                                         <td>
@@ -117,22 +123,6 @@
                         </Modal>
 
                         <!-- Delete Alert Modal -->
-<!--                        <Modal v-model="showDeleteModal" width="360">-->
-<!--                            <template #header>-->
-<!--                                <p style="color:#f60;text-align:center">-->
-<!--                                    <Icon type="ios-information-circle"></Icon>-->
-<!--                                    <span>Delete confirmation</span>-->
-<!--                                </p>-->
-<!--                            </template>-->
-<!--                            <div style="text-align:center">-->
-<!--                                <p>Aer you sure want to delete category?</p>-->
-<!--                                <p>Will you delete it?</p>-->
-<!--                            </div>-->
-<!--                            <template #footer>-->
-<!--                                <Button type="error" size="large" long :loading="isDeleting" :disabled="isDeleting" @click="deleteCategory">Delete 2</Button>-->
-<!--                            </template>-->
-<!--                        </Modal>-->
-
                         <deleteModal></deleteModal>
 
                     </div>
@@ -238,19 +228,6 @@ export default {
             this.isIconImageNew = false
 
         },
-        // async deleteCategory() {
-        //     this.isDeleting = true
-        //     const res = await this.callApi('post', 'delete_category', this.deleteItem)
-        //     if (res.status === 201) {
-        //         // get all categories
-        //         this.getCategories()
-        //         this.s('Category has been deleted successfully!')
-        //     } else {
-        //         this.swr()
-        //     }
-        //     this.isDeleting = false
-        //     this.showDeleteModal = false
-        // },
         showDeleteModel(category) {
 
             const delModalObj = {
@@ -259,15 +236,13 @@ export default {
                 data: category,
                 deleteUrl: 'delete_category',
             }
-
             store.commit('setDeletingModalObj', delModalObj)
-            // this.deleteItem = category
-            // this.showDeleteModal = true
         },
         handleSuccess (res, file) {
             if (this.isEditingItem) {
                 this.editData.iconImage = res
                 this.isIconImageNew = false
+                return this.editData.iconImage = res
             }
             this.data.iconImage = res
         },
