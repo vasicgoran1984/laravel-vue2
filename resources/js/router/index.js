@@ -1,13 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import About from '../components/pages/About.vue'
-import Contact from '../components/pages/Contact.vue'
 import hooks from '../components/basic/hooks.vue'
 import methods from '../components/basic/methods.vue'
 import Home from '../components/pages/home.vue'
 import Tags from '../admin/pages/tags.vue'
 import Category from '../admin/pages/category.vue'
-import adminusers from "../admin/pages/adminusers.vue";
+import Adminusers from "../admin/pages/adminusers.vue";
+import Login from   '../admin/pages/login.vue'
+import LoginUser from '../admin/pages/login-user.vue'
 
 Vue.use(Router)
 
@@ -31,7 +31,17 @@ export default new Router({
         {
             path: '/adminusers',
             name: 'adminusers',
-            component: adminusers
+            component: Adminusers
+        },
+        {
+            path: '/login',
+            name: 'login',
+            component: Login
+        },
+        {
+            path: '/login-user',
+            name: 'login-user',
+            component: LoginUser
         },
 
         // vue hooks
@@ -45,7 +55,7 @@ export default new Router({
         {
             path: '/methods',
             name: 'methods',
-            component: methods
+            component: methods,
         },
     ]
 })

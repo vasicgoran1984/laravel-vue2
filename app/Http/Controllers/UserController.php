@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -15,6 +16,25 @@ class UserController extends Controller
     public function index()
     {
         return User::orderBy('id', 'desc')->get();
+    }
+
+    public function login(Request $request)
+    {
+
+        // check if not logged in
+        if (!Auth::check() && $request->path() != 'login') {
+            return redirect('/login');
+        }
+
+        if (!Auth::check() && $request->path() == 'login') {
+
+            return view('welcome');
+        }
+
+        $user = Auth::user();
+        if ($user) {
+            return view('welcome');
+        }
     }
 
     /**
@@ -124,5 +144,41 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function adminLogin(Request $request)
+    {
+        $this->validate($request, [
+            'email' => 'bail|required|email',
+            'password' => 'bail|required|min:6',
+        ]);
+
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+
+            $user = Auth::user();
+
+            if ($user->userType == 'User') {
+                Auth::logout();
+                return response()->json([
+                    'msg' => 'Incorrect login details',
+                ], 401);
+            }
+
+            return response()->json([
+               'msg' => 'You are logged in',
+                'user' => $user
+            ]);
+        } else {
+            return response()->json([
+                'msg' => 'Incorrect login details',
+            ], 401);
+        }
+    }
+
+    public function logOut(Request $request)
+    {
+//        die('logOut');
+        Auth::logout();
+        return view('welcome');
     }
 }

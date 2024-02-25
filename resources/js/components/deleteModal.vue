@@ -44,7 +44,7 @@
                 this.isDeleting = false
             },
             closeModal() {
-                store.commit('SetDeleteModal', false)
+                store.commit('setDeleteModal', false)
             }
         },
         computed: {
