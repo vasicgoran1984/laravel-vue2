@@ -8,11 +8,20 @@ Vue.use(iView);
 import common from './common'
 Vue.mixin(common)
 
-/* eslint-disable no-new */
-new Vue({
-    el: '#app',
+
+window.Vue = require('vue').default;
+
+const app = new Vue({
+    el: "#app",
     components: { App },
     router,
-    template: '<App/>',
     store,
-})
+});
+
+
+Vue.component(
+    "app",
+    require("./App.vue").default
+);
+
+
