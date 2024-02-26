@@ -8,6 +8,7 @@ import Category from '../admin/pages/category.vue'
 import Adminusers from "../admin/pages/adminusers.vue";
 import Login from   '../admin/pages/login.vue'
 import LoginUser from '../admin/pages/login-user.vue'
+import Role from '../admin/pages/role.vue'
 
 Vue.use(Router)
 
@@ -32,6 +33,11 @@ export default new Router({
             path: '/adminusers',
             name: 'adminusers',
             component: Adminusers
+        },
+        {
+            path: '/role',
+            name: 'role',
+            component: Role
         },
         {
             path: '/login',
