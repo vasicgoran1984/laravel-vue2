@@ -21,27 +21,35 @@ use Illuminate\Support\Facades\Route;
 //    return view('welcome');
 //});
 
-Route::resource('tag', \App\Http\Controllers\TagController::class);
-Route::post('update_tag',  [\App\Http\Controllers\TagController::class, 'editTag']);
-Route::post('delete_tag',  [\App\Http\Controllers\TagController::class, 'destroy']);
+Route::middleware(['adminCheck'])->group(function (){
+    Route::resource('tag', \App\Http\Controllers\TagController::class);
+    Route::post('update_tag',  [\App\Http\Controllers\TagController::class, 'editTag']);
+    Route::post('delete_tag',  [\App\Http\Controllers\TagController::class, 'destroy']);
 
-// Category
-Route::resource('category', \App\Http\Controllers\CategoryController::class);
-Route::post('update_category',  [\App\Http\Controllers\CategoryController::class, 'editCategory']);
-Route::post('delete_category',  [\App\Http\Controllers\CategoryController::class, 'destroy']);
-Route::post('app/upload',  [\App\Http\Controllers\CategoryController::class, 'upload']);
-Route::post('app/delete_image',  [\App\Http\Controllers\CategoryController::class, 'deleteImage']);
+    // Category
+    Route::resource('category', \App\Http\Controllers\CategoryController::class);
+    Route::post('update_category',  [\App\Http\Controllers\CategoryController::class, 'editCategory']);
+    Route::post('delete_category',  [\App\Http\Controllers\CategoryController::class, 'destroy']);
+    Route::post('app/upload',  [\App\Http\Controllers\CategoryController::class, 'upload']);
+    Route::post('app/delete_image',  [\App\Http\Controllers\CategoryController::class, 'deleteImage']);
 
 
-// User
-Route::resource('user', \App\Http\Controllers\UserController::class);
-Route::post('update_user',  [\App\Http\Controllers\UserController::class, 'editUser']);
-Route::post('app/admin_login',  [\App\Http\Controllers\UserController::class, 'adminLogin']);
+    //Role
+    Route::resource('role', \App\Http\Controllers\RoleController::class);
+    Route::post('update_role',  [\App\Http\Controllers\RoleController::class, 'editRole']);
 
-Route::get('/logout',  [\App\Http\Controllers\UserController::class, 'logOut']);
-Route::get('/login',  [\App\Http\Controllers\UserController::class, 'login']);
-Route::get('/',  [\App\Http\Controllers\UserController::class, 'login']);
-Route::any('{slug}',  [\App\Http\Controllers\UserController::class, 'login']);
+    // User
+    Route::resource('user', \App\Http\Controllers\UserController::class);
+    Route::post('update_user',  [\App\Http\Controllers\UserController::class, 'editUser']);
+    Route::post('app/admin_login',  [\App\Http\Controllers\UserController::class, 'adminLogin']);
+
+    Route::get('/logout',  [\App\Http\Controllers\UserController::class, 'logOut']);
+    Route::get('/login',  [\App\Http\Controllers\UserController::class, 'login']);
+    Route::get('/',  [\App\Http\Controllers\UserController::class, 'login']);
+    Route::any('{slug}',  [\App\Http\Controllers\UserController::class, 'login']);
+
+
+});
 
 
 

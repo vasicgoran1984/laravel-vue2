@@ -177,7 +177,6 @@ class UserController extends Controller
 
     public function logOut(Request $request)
     {
-//        die('logOut');
         Auth::logout();
         return view('welcome');
     }

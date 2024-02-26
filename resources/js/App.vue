@@ -22,6 +22,7 @@
                             <li><router-link to="/tags"><Icon type="ios-speedometer" /> Tags</router-link></li>
                             <li><router-link to="/category"><Icon type="ios-speedometer" /> Category</router-link></li>
                             <li><router-link to="/adminusers"><Icon type="ios-speedometer" /> Admin users</router-link></li>
+                            <li><router-link to="/role"><Icon type="ios-speedometer" /> Role Management</router-link></li>
                             <li><a href="/logout"><Icon type="ios-speedometer" /> LogOut</a></li>
 
                         </ul>
@@ -70,13 +71,10 @@
             console.log('Component mounted.')
         },
         created() {
-            console.log('store state user')
-            console.log(this.user)
             store.commit('updateUser', this.user)
         },
         methods: {
             getUser() {
-                console.log(store.getters.getUser)
                 return store.getters.getUser
             }
         }
