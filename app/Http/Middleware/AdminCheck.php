@@ -24,7 +24,7 @@ class AdminCheck
 
         $user = Auth::user();
 
-        if($user->userType == 'User') {
+        if($user->roles->isAdmin == 0) {
             return response()->json([
                 'msg' => 'You are not allowed!',
                 'url' => $request->path(),

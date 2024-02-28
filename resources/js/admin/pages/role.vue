@@ -136,8 +136,7 @@ export default {
             if(this.editData.roleName.trim() == '') return this.e('Role Name is required!')
             const res = await this.callApi('post', 'update_role', this.editData)
             if(res.status === 201) {
-                // get all tags
-                // this.getTags()
+                // get all roles
                 this.roles[this.index].roleName = this.editData.roleName
                 this.s('Role has been edited successfully!')
                 this.editModal = false
