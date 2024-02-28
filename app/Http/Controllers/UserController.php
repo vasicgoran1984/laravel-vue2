@@ -60,7 +60,7 @@ class UserController extends Controller
             'fullName' => 'required',
             'email' => 'bail|required|email|unique:users',
             'password' => 'bail|required|min:6',
-            'userType' => 'required',
+            'role_id' => 'required',
         ]);
 
         $password = bcrypt($request->password);
@@ -69,7 +69,7 @@ class UserController extends Controller
             'fullName' => $request->fullName,
             'email' => $request->email,
             'password' => $password,
-            'userType' => $request->userType,
+            'role_id' => $request->role_id,
         ]);
     }
 
@@ -157,7 +157,7 @@ class UserController extends Controller
 
             $user = Auth::user();
 
-            if ($user->userType == 'User') {
+            if ($user->roles->isAdmin == 0) {
                 Auth::logout();
                 return response()->json([
                     'msg' => 'Incorrect login details',
@@ -166,7 +166,7 @@ class UserController extends Controller
 
             return response()->json([
                'msg' => 'You are logged in',
-                'user' => $user
+                'user' => $user,
             ]);
         } else {
             return response()->json([
