@@ -9,6 +9,7 @@ import Adminusers from "../admin/pages/adminusers.vue";
 import Login from   '../admin/pages/login.vue'
 import LoginUser from '../admin/pages/login-user.vue'
 import Role from '../admin/pages/role.vue'
+import AssignRole from '../admin/pages/assign-role.vue'
 
 Vue.use(Router)
 
@@ -45,23 +46,9 @@ export default new Router({
             component: Login
         },
         {
-            path: '/login-user',
-            name: 'login-user',
-            component: LoginUser
-        },
-
-        // vue hooks
-        {
-            path: '/hooks',
-            name: 'hooks',
-            component: hooks
-        },
-
-        // vue methods
-        {
-            path: '/methods',
-            name: 'methods',
-            component: methods,
+            path: '/assign-role',
+            name: 'assign-role',
+            component: AssignRole
         },
     ]
 })
