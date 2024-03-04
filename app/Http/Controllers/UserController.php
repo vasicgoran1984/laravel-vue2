@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -20,7 +22,7 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
-
+//        dd($request->fullUrl());
         // check if not logged in
         if (!Auth::check() && $request->path() != 'login') {
             return redirect('/login');
@@ -34,6 +36,8 @@ class UserController extends Controller
         $user = Auth::user();
         if ($user) {
             return view('welcome');
+        } else {
+            return view('404');
         }
     }
 
@@ -146,6 +150,21 @@ class UserController extends Controller
         //
     }
 
+
+    public function checkPermission($user)
+    {
+        $rolesPermission = DB::table('roles')
+            ->select(DB::raw('permission'))
+            ->where('id', $user->id)
+            ->first();
+
+        $allPersmissions = [];
+
+        foreach (json_decode($rolesPermission->permission) as $key => $value) {
+            $allPersmissions[$key] = $value;
+        }
+        return json_decode(json_encode($allPersmissions), true);
+    }
     public function adminLogin(Request $request)
     {
         $this->validate($request, [
@@ -156,6 +175,7 @@ class UserController extends Controller
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
 
             $user = Auth::user();
+            //$permissions = $this->checkPermission($user);
 
             if ($user->roles->isAdmin == 0) {
                 Auth::logout();
@@ -167,6 +187,7 @@ class UserController extends Controller
             return response()->json([
                'msg' => 'You are logged in',
                 'user' => $user,
+                //'permissions' => $permissions,
             ]);
         } else {
             return response()->json([

@@ -7,7 +7,6 @@ import Tags from '../admin/pages/tags.vue'
 import Category from '../admin/pages/category.vue'
 import Adminusers from "../admin/pages/adminusers.vue";
 import Login from   '../admin/pages/login.vue'
-import LoginUser from '../admin/pages/login-user.vue'
 import Role from '../admin/pages/role.vue'
 import AssignRole from '../admin/pages/assign-role.vue'
 

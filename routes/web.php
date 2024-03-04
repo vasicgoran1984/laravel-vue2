@@ -37,6 +37,7 @@ Route::middleware(['adminCheck'])->group(function (){
     //Role
     Route::resource('role', \App\Http\Controllers\RoleController::class);
     Route::post('update_role',  [\App\Http\Controllers\RoleController::class, 'editRole']);
+    Route::post('assign_roles',  [\App\Http\Controllers\RoleController::class, 'assignRoles']);
 
     // User
     Route::resource('user', \App\Http\Controllers\UserController::class);

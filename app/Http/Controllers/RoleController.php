@@ -14,7 +14,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        return Role::orderBy('id', 'desc')->get();
+        return Role::orderBy('id', 'asc')->get();
     }
 
     /**
@@ -41,6 +41,18 @@ class RoleController extends Controller
 
         return Role::create([
             'roleName' => $request->roleName,
+        ]);
+    }
+
+    public function assignRoles(Request $request)
+    {
+        $this->validate($request, [
+            'id' => 'required',
+            'permission' => 'required',
+        ]);
+
+        return Role::where('id', $request->id)->update([
+            'permission' => $request->permission,
         ]);
     }
 

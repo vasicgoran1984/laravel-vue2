@@ -33,7 +33,7 @@
 <h1>Welcome to the Laravel Project</h1>
 <div id="app">
     @if(Auth::check())
-        <app user="{{Auth::user()}}"></app>
+        <app user="{{Auth::user()}}" :permission="{{Auth::user()->roles->permission}}"></app>
     @else
         <app user=""></app>
     @endif
