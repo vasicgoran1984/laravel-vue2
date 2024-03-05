@@ -69,7 +69,8 @@
             console.log('Component mounted.')
         },
         created() {
-            store.commit('updateUser', this.user)
+            store.commit('setUpdateUser', this.user)
+            store.commit('setUserPermission', this.permission)
         },
         methods: {
             getUser() {

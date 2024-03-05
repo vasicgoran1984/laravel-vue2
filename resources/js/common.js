@@ -1,4 +1,5 @@
 import axios from 'axios';
+import store from "./store";
 
 export default {
     methods: {
@@ -43,6 +44,37 @@ export default {
                 title: title,
                 desc: desc,
             });
+        },
+        checkUserPermission(key) {
+            if (!store.getters.getUserPermission) return true
+            let isPermitted = false;
+            for (let d of store.getters.getUserPermission) {
+                if (this.$route.name == d.name) {
+                    if(d[key]) {
+                        console.log(d[key])
+                        isPermitted = true
+                        break;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            return isPermitted;
         }
+    },
+
+    computed: {
+        isReadPermitted() {
+            return this.checkUserPermission('read')
+        },
+        isWritePermitted() {
+            return this.checkUserPermission('write')
+        },
+        isUpdatePermitted() {
+            return this.checkUserPermission('update')
+        },
+        isDeletedPermitted() {
+            return this.checkUserPermission('delete')
+        },
     },
 }
